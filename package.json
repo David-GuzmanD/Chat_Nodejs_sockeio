@@ -1,0 +1,17 @@
+{
+  "name": "proyecto",
+  "version": "1.0.0",
+  "description": "Chat con node y socket",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server",
+    "dev": "nodemon server"
+  },
+  "author": "David Trinidad Guzmán Díaz",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "moment": "^2.29.1",
+    "socket.io": "^4.0.1"
+  }
+}
