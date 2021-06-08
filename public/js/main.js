@@ -2,7 +2,18 @@ const chatForm = document.getElementById('chat-form');
 //constante que toma el estilo del elemento de mi document
 const chatMessage = document.querySelector('.chat-messages');
 
+
+//obteniendo username y room del URL
+const {username,room} = Qs.parse(location.search, {
+    ignoreQueryPrefix: true
+});
+
+
 const socket = io();
+
+
+//Unirme a la sala
+socket.emit('joinRoom', {username, room});
 
 socket.on('message', message => {
 
@@ -13,6 +24,7 @@ socket.on('message', message => {
     chatMessage.scrollTop = chatMessage.scrollHeight;
 
 });
+
 
 chatForm.addEventListener('submit', (e)=> {
     e.preventDefault();
@@ -29,6 +41,7 @@ chatForm.addEventListener('submit', (e)=> {
 
     // console.log(msg);
 });
+
 
 function outputMessage(msg){
     const div = document.createElement('div');
