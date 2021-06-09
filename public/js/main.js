@@ -1,6 +1,8 @@
 const chatForm = document.getElementById('chat-form');
 //constante que toma el estilo del elemento de mi document
 const chatMessage = document.querySelector('.chat-messages');
+const roomName = document.getElementById('room-name');
+const userList = document.getElementById('users');
 
 
 //obteniendo username y room del URL
@@ -14,6 +16,13 @@ const socket = io();
 
 //Unirme a la sala
 socket.emit('joinRoom', {username, room});
+
+
+socket.on('roomUsers', ({room, users}) => {
+    outputRoomName(room);
+    outputUsers(users);
+});
+
 
 socket.on('message', message => {
 
@@ -53,3 +62,23 @@ function outputMessage(msg){
 
     document.querySelector('.chat-messages').appendChild(div);
 };
+
+
+document.getElementById('leave-btn').addEventListener('click', () => {
+    const leaveRoom = confirm('¿Estas seguro que quieres salir?');
+
+    if (leaveRoom) {
+        window.location = '../index.html';
+    };
+});
+
+
+//Agregar el nombre de la sala
+function outputRoomName(room) {
+    roomName.innerHTML = room;
+}
+
+//Agregar el nombre de los usuarios
+function outputUsers(users) {
+    userList.innerHTML = `${users.map(user => `<li>${user.username}</li>`).join('')}`;
+}
