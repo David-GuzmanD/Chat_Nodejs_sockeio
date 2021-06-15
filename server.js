@@ -3,7 +3,8 @@ const http = require ('http');
 const express = require('express');
 const socketio = require('socket.io');
 const formatMessage = require('./utils/messages');
-const { userJoin, getCurrentUser, userLeave, getRoomUsers } =require('./utils/users')
+const { userJoin, getCurrentUser, userLeave, getRoomUsers } = require('./utils/users');
+
 
 
 const app = express();
@@ -18,7 +19,7 @@ io.on('connection', socket => {
 
     socket.on('joinRoom', ({username, room}) => {
         const user = userJoin(socket.id, username, room);
-
+        
         socket.join(user.room);
    
         //Mensaje solo al usuario que se conecta
@@ -26,10 +27,13 @@ io.on('connection', socket => {
         
         // Mensaje a todos los clientes o usuario, excepto el que se esta conectando al instante
         socket.broadcast.to(user.room).emit('message', formatMessage(botName, `${user.username} se ha conectado al chat`));
-
+        
+        //Mensaje de cuantas personas estan conectadas (practica examen)
+        socket.broadcast.to(user.room).emit('message', formatMessage(botName, `Los integrantes conectados son: ${getRoomUsers(user.room).map((user) => { return user.username})}`))
+        
         //Mandar usuarios y sala
         io.to(user.room).emit('roomUsers', { room: user.room, users: getRoomUsers(user.room)});
-   
+
     });
 
 
