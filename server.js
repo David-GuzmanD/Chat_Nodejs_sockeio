@@ -4,6 +4,7 @@ const express = require('express');
 const socketio = require('socket.io');
 const formatMessage = require('./utils/messages');
 const { userJoin, getCurrentUser, userLeave, getRoomUsers } = require('./utils/users');
+const { count } = require('console');
 
 
 
@@ -28,9 +29,15 @@ io.on('connection', socket => {
         // Mensaje a todos los clientes o usuario, excepto el que se esta conectando al instante
         socket.broadcast.to(user.room).emit('message', formatMessage(botName, `${user.username} se ha conectado al chat`));
         
+
+
         //Mensaje de cuantas personas estan conectadas (practica examen)
-        socket.broadcast.to(user.room).emit('message', formatMessage(botName, `Los integrantes conectados son: ${getRoomUsers(user.room).map((user) => { return user.username})}`))
+        socket.broadcast.to(user.room).emit('message', formatMessage(botName, `Los integrantes conectados son ${getRoomUsers(user.room).length} : ${getRoomUsers(user.room).map((user) => { return user.username})}`))
         
+
+        
+
+
         //Mandar usuarios y sala
         io.to(user.room).emit('roomUsers', { room: user.room, users: getRoomUsers(user.room)});
 
@@ -53,6 +60,10 @@ io.on('connection', socket => {
 
         if (user) {
             io.to(user.room).emit('message', formatMessage(botName, `${user.username} ha salido del chat`));
+
+            //Mensaje de cuantas personas estan conectadas (practica examen)
+            socket.broadcast.to(user.room).emit('message', formatMessage(botName, `Los integrantes conectados son ${getRoomUsers(user.room).length} : ${getRoomUsers(user.room).map((user) => { return user.username })}`))
+
 
             //Mandar usuarios y sala
             io.to(user.room).emit('roomUsers', { room: user.room, users: getRoomUsers(user.room)});
